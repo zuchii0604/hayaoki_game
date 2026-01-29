@@ -6,7 +6,13 @@
     <title>早起きランキング！</title>
     <style>
         body { font-family: sans-serif; text-align: center; background-color: #f0f8ff; padding: 20px; }
-        h1 { color: #ff8c00; }
+        h1 { color: #ff8c00; margin-bottom: 5px; }
+        
+        /* 日付と曜日のスタイル */
+        #dateContainer { font-size: 1.4rem; color: #666; margin-bottom: 20px; font-weight: bold; }
+        .sat { color: #0000ff; } /* 土曜日は青 */
+        .sun { color: #ff0000; } /* 日曜日は赤 */
+        
         .member-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
         button.wake-btn { padding: 15px 25px; font-size: 1.2rem; cursor: pointer; border-radius: 10px; border: none; background: white; box-shadow: 0 4px #ccc; font-weight: bold; }
         button.wake-btn:active { box-shadow: none; transform: translateY(4px); }
@@ -19,7 +25,6 @@
         .stats-section { margin-top: 30px; border-top: 3px solid #ff8c00; padding-top: 10px; }
         table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 1.1rem; }
         th, td { text-align: center; padding: 8px; border-bottom: 1px solid #ddd; }
-        th { background-color: #fffaf0; }
         
         .admin { margin-top: 40px; }
         .reset-btn { font-size: 0.8rem; background: #f0f0f0; border: 1px solid #ccc; padding: 8px; border-radius: 5px; cursor: pointer; color: #666; }
@@ -28,9 +33,88 @@
 <body>
 
     <h1>☀️ 早起きチャンピオン</h1>
-
-    <div class="member-list" id="buttonArea">
+    <div id="dateContainer"></div> <div class="member-list" id="buttonArea">
         <button class="wake-btn" onclick="wakeUp(this, 'めい')">めい</button>
         <button class="wake-btn" onclick="wakeUp(this, 'そうた')">そうた</button>
         <button class="wake-btn" onclick="wakeUp(this, 'はるひ')">はるひ</button>
-        <button class="wake-btn" onclick="wakeUp(
+        <button class="wake-btn" onclick="wakeUp(this, 'あきと')">あきと</button>
+        <button class="wake-btn" onclick="wakeUp(this, 'ふゆか')">ふゆか</button>
+    </div>
+
+    <div class="container">
+        <h3>🏆 今日のじゅんい</h3>
+        <div id="rankList"></div>
+
+        <div class="stats-section">
+            <h3>📅 こんしゅうの優勝回数</h3>
+            <table id="statsTable"></table>
+        </div>
+    </div>
+
+    <div class="admin">
+        <button class="reset-btn" onclick="nextDay()">明日への準備（今日をリセット）</button>
+        <button class="reset-btn" onclick="clearAll()">すべての記録を消す</button>
+    </div>
+
+    <script>
+        const members = ['めい', 'そうた', 'はるひ', 'あきと', 'ふゆか'];
+        let count = 0;
+
+        // 日付と曜日を表示する処理
+        function displayDate() {
+            const now = new Date();
+            const days = ['日', '月', '火', '水', '木', '金', '土'];
+            const dayOfWeek = now.getDay(); // 0:日, 6:土
+            
+            let colorClass = "";
+            if (dayOfWeek === 0) colorClass = "sun";
+            if (dayOfWeek === 6) colorClass = "sat";
+
+            const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 <span class="${colorClass}">(${days[dayOfWeek]})</span>`;
+            document.getElementById('dateContainer').innerHTML = dateStr;
+        }
+
+        // 保存データの読み込み
+        let weeklyWins = JSON.parse(localStorage.getItem('weeklyWins')) || {};
+        members.forEach(m => { if(weeklyWins[m] === undefined) weeklyWins[m] = 0; });
+
+        function wakeUp(btn, name) {
+            count++;
+            if (count === 1) {
+                weeklyWins[name]++;
+                localStorage.setItem('weeklyWins', JSON.stringify(weeklyWins));
+                updateStats();
+            }
+            const rankList = document.getElementById('rankList');
+            const div = document.createElement('div');
+            div.className = 'rank-item';
+            div.innerHTML = `<span class="rank-number">${count}位</span> <span>${name}</span>`;
+            rankList.appendChild(div);
+            btn.disabled = true;
+        }
+
+        function updateStats() {
+            const table = document.getElementById('statsTable');
+            table.innerHTML = `<tr><th>なまえ</th><th>1位の数</th></tr>` + 
+                members.map(m => `<tr><td>${m}</td><td>🏆 ${weeklyWins[m]} 回</td></tr>`).join('');
+        }
+
+        function nextDay() {
+            if(confirm("今日のランキングをリセットしますか？")) {
+                location.reload(); 
+            }
+        }
+
+        function clearAll() {
+            if(confirm("すべての記録を完全に消去しますか？")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // 実行
+        displayDate();
+        updateStats();
+    </script>
+</body>
+</html>

@@ -6,19 +6,23 @@
     <title>早起きランキング！</title>
     <style>
         body { font-family: sans-serif; text-align: center; background-color: #f0f8ff; padding: 20px; }
+        h1 { color: #ff8c00; }
         .member-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        button { padding: 15px 25px; font-size: 1.2rem; cursor: pointer; border-radius: 10px; border: none; background: white; box-shadow: 0 4px #ccc; }
-        button:disabled { background: #eee; color: #aaa; box-shadow: none; }
+        button.wake-btn { padding: 15px 25px; font-size: 1.2rem; cursor: pointer; border-radius: 10px; border: none; background: white; box-shadow: 0 4px #ccc; font-weight: bold; }
+        button.wake-btn:active { box-shadow: none; transform: translateY(4px); }
+        button.wake-btn:disabled { background: #eee; color: #aaa; box-shadow: none; cursor: not-allowed; }
         
         .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: left; }
-        .rank-item { font-size: 1.2rem; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .rank-item { font-size: 1.3rem; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .rank-number { font-weight: bold; color: #ff4500; margin-right: 10px; }
         
-        .stats-section { margin-top: 30px; border-top: 2px solid #ff8c00; padding-top: 10px; }
-        table { width: 100%; margin-top: 10px; border-collapse: collapse; }
-        th, td { text-align: center; padding: 5px; border-bottom: 1px solid #ddd; }
+        .stats-section { margin-top: 30px; border-top: 3px solid #ff8c00; padding-top: 10px; }
+        table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 1.1rem; }
+        th, td { text-align: center; padding: 8px; border-bottom: 1px solid #ddd; }
+        th { background-color: #fffaf0; }
         
         .admin { margin-top: 40px; }
-        .reset-btn { font-size: 0.7rem; background: #f0f0f0; border: 1px solid #ccc; padding: 5px; }
+        .reset-btn { font-size: 0.8rem; background: #f0f0f0; border: 1px solid #ccc; padding: 8px; border-radius: 5px; cursor: pointer; color: #666; }
     </style>
 </head>
 <body>
@@ -26,78 +30,7 @@
     <h1>☀️ 早起きチャンピオン</h1>
 
     <div class="member-list" id="buttonArea">
-        <button onclick="wakeUp(this, '子1')">子1</button>
-        <button onclick="wakeUp(this, '子2')">子2</button>
-        <button onclick="wakeUp(this, '子3')">子3</button>
-        <button onclick="wakeUp(this, '子4')">子4</button>
-        <button onclick="wakeUp(this, '子5')">子5</button>
-    </div>
-
-    <div class="container">
-        <h3>🏆 今日のじゅんい</h3>
-        <div id="rankList"></div>
-
-        <div class="stats-section">
-            <h3>📅 今週の1位の回数</h3>
-            <table id="statsTable">
-                </table>
-        </div>
-    </div>
-
-    <div class="admin">
-        <button class="reset-btn" onclick="nextDay()">明日への準備（今日をリセット）</button>
-        <button class="reset-btn" onclick="clearAll()">全部消す</button>
-    </div>
-
-    <script>
-        const members = ['子1', '子2', '子3', '子4', '子5'];
-        let count = 0;
-
-        // データの読み込み
-        let weeklyWins = JSON.parse(localStorage.getItem('weeklyWins')) || {};
-        members.forEach(m => { if(!weeklyWins[m]) weeklyWins[m] = 0; });
-
-        function wakeUp(btn, name) {
-            count++;
-            
-            // 1位の人だけカウントアップ
-            if (count === 1) {
-                weeklyWins[name]++;
-                localStorage.setItem('weeklyWins', JSON.stringify(weeklyWins));
-                updateStats();
-            }
-
-            // 今日のランキング表示
-            const rankList = document.getElementById('rankList');
-            const div = document.createElement('div');
-            div.className = 'rank-item';
-            div.innerHTML = `<b>${count}位</b>: ${name}`;
-            rankList.appendChild(div);
-
-            btn.disabled = true;
-        }
-
-        function updateStats() {
-            const table = document.getElementById('statsTable');
-            table.innerHTML = `<tr><th>名前</th><th>1位の数</th></tr>` + 
-                members.map(m => `<tr><td>${m}</td><td>${weeklyWins[m]}回</td></tr>`).join('');
-        }
-
-        function nextDay() {
-            if(confirm("今日のランキングを消して、明日の準備をしますか？（累計は残ります）")) {
-                location.reload(); 
-            }
-        }
-
-        function clearAll() {
-            if(confirm("累計データもすべて消去しますか？")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-
-        // 初期表示
-        updateStats();
-    </script>
-</body>
-</html>
+        <button class="wake-btn" onclick="wakeUp(this, 'めい')">めい</button>
+        <button class="wake-btn" onclick="wakeUp(this, 'そうた')">そうた</button>
+        <button class="wake-btn" onclick="wakeUp(this, 'はるひ')">はるひ</button>
+        <button class="wake-btn" onclick="wakeUp(

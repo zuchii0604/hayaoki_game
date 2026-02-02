@@ -2,119 +2,142 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>早起きランキング！</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; background-color: #f0f8ff; padding: 20px; }
-        h1 { color: #ff8c00; margin-bottom: 5px; }
-        
-        /* 日付と曜日のスタイル */
-        #dateContainer { font-size: 1.4rem; color: #666; margin-bottom: 20px; font-weight: bold; }
-        .sat { color: #0000ff; } /* 土曜日は青 */
-        .sun { color: #ff0000; } /* 日曜日は赤 */
-        
-        .member-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        button.wake-btn { padding: 15px 25px; font-size: 1.2rem; cursor: pointer; border-radius: 10px; border: none; background: white; box-shadow: 0 4px #ccc; font-weight: bold; }
-        button.wake-btn:active { box-shadow: none; transform: translateY(4px); }
-        button.wake-btn:disabled { background: #eee; color: #aaa; box-shadow: none; cursor: not-allowed; }
-        
-        .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: left; }
-        .rank-item { font-size: 1.3rem; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .rank-number { font-weight: bold; color: #ff4500; margin-right: 10px; }
-        
-        .stats-section { margin-top: 30px; border-top: 3px solid #ff8c00; padding-top: 10px; }
-        table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 1.1rem; }
-        th, td { text-align: center; padding: 8px; border-bottom: 1px solid #ddd; }
-        
-        .admin { margin-top: 40px; }
-        .reset-btn { font-size: 0.8rem; background: #f0f0f0; border: 1px solid #ccc; padding: 8px; border-radius: 5px; cursor: pointer; color: #666; }
+        @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap');
+        body { font-family: 'Zen Maru Gothic', sans-serif; }
+        .tap-none { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
-<body>
+<body class="bg-blue-50 min-h-screen pb-10">
 
-    <h1>☀️ 早起きチャンピオン</h1>
-    <div id="dateContainer"></div> <div class="member-list" id="buttonArea">
-        <button class="wake-btn" onclick="wakeUp(this, 'めい')">めい</button>
-        <button class="wake-btn" onclick="wakeUp(this, 'そうた')">そうた</button>
-        <button class="wake-btn" onclick="wakeUp(this, 'はるひ')">はるひ</button>
-        <button class="wake-btn" onclick="wakeUp(this, 'あきと')">あきと</button>
-        <button class="wake-btn" onclick="wakeUp(this, 'ふゆか')">ふゆか</button>
-    </div>
+    <header class="pt-6 pb-2 text-center">
+        <h1 class="text-3xl font-bold text-orange-500 drop-shadow-sm">☀️ 早起きチャンピオン</h1>
+        <div id="dateContainer" class="text-lg font-bold text-gray-500 mt-1"></div>
+    </header>
 
-    <div class="container">
-        <h3>🏆 今日のじゅんい</h3>
-        <div id="rankList"></div>
+    <main class="max-w-md mx-auto px-4 space-y-6">
 
-        <div class="stats-section">
-            <h3>📅 こんしゅうの優勝回数</h3>
-            <table id="statsTable"></table>
+        <section class="grid grid-cols-5 gap-2" id="buttonArea">
+            <button onclick="wakeUp('めい')" id="btn-めい" class="tap-none bg-white py-4 rounded-2xl shadow-md border-b-4 border-gray-200 active:border-b-0 active:translate-y-1 transition-all font-bold text-gray-700 disabled:bg-gray-200 disabled:border-none disabled:text-gray-400">めい</button>
+            <button onclick="wakeUp('そうた')" id="btn-そうた" class="tap-none bg-white py-4 rounded-2xl shadow-md border-b-4 border-gray-200 active:border-b-0 active:translate-y-1 transition-all font-bold text-gray-700 disabled:bg-gray-200 disabled:border-none disabled:text-gray-400">そうた</button>
+            <button onclick="wakeUp('はるひ')" id="btn-はるひ" class="tap-none bg-white py-4 rounded-2xl shadow-md border-b-4 border-gray-200 active:border-b-0 active:translate-y-1 transition-all font-bold text-gray-700 disabled:bg-gray-200 disabled:border-none disabled:text-gray-400">はるひ</button>
+            <button onclick="wakeUp('あきと')" id="btn-あきと" class="tap-none bg-white py-4 rounded-2xl shadow-md border-b-4 border-gray-200 active:border-b-0 active:translate-y-1 transition-all font-bold text-gray-700 disabled:bg-gray-200 disabled:border-none disabled:text-gray-400">あきと</button>
+            <button onclick="wakeUp('ふゆか')" id="btn-ふゆか" class="tap-none bg-white py-4 rounded-2xl shadow-md border-b-4 border-gray-200 active:border-b-0 active:translate-y-1 transition-all font-bold text-gray-700 disabled:bg-gray-200 disabled:border-none disabled:text-gray-400">ふゆか</button>
+        </section>
+
+        <div class="flex justify-center">
+            <button onclick="undo()" id="undoBtn" class="tap-none flex items-center gap-1 bg-red-100 text-red-600 px-4 py-2 rounded-full text-sm font-bold shadow-sm active:scale-95 transition-transform disabled:opacity-30 disabled:pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                </svg>
+                とりけし
+            </button>
         </div>
-    </div>
 
-    <div class="admin">
-        <button class="reset-btn" onclick="nextDay()">明日への準備（今日をリセット）</button>
-        <button class="reset-btn" onclick="clearAll()">すべての記録を消す</button>
-    </div>
+        <section class="bg-white rounded-3xl p-5 shadow-lg shadow-blue-100 border border-blue-100">
+            <h3 class="text-gray-400 text-sm font-bold mb-4 flex items-center gap-2">
+                <span class="bg-orange-400 w-1 h-4 rounded-full"></span> 🏆 今日のじゅんい
+            </h3>
+            <div id="rankList" class="flex gap-2 min-h-[70px]">
+                </div>
+        </section>
+
+        <section class="bg-white rounded-3xl p-5 shadow-lg shadow-blue-100 border border-blue-100">
+            <h3 class="text-gray-400 text-sm font-bold mb-4 flex items-center gap-2">
+                <span class="bg-blue-400 w-1 h-4 rounded-full"></span> 📅 こんしゅうの得点
+            </h3>
+            <div id="statsArea" class="flex justify-between gap-1">
+                </div>
+        </section>
+
+        <footer class="flex justify-center gap-4 pt-4">
+            <button onclick="nextDay()" class="text-xs text-gray-400 hover:text-gray-600 underline decoration-dotted">きょうリセット</button>
+            <button onclick="clearAll()" class="text-xs text-gray-400 hover:text-red-400 underline decoration-dotted">こんしゅうリセット</button>
+        </footer>
+
+    </main>
 
     <script>
         const members = ['めい', 'そうた', 'はるひ', 'あきと', 'ふゆか'];
-        let count = 0;
+        let history = [];
+        const pointsTable = [5, 4, 3, 2, 1];
 
-        // 日付と曜日を表示する処理
-        function displayDate() {
-            const now = new Date();
-            const days = ['日', '月', '火', '水', '木', '金', '土'];
-            const dayOfWeek = now.getDay(); // 0:日, 6:土
-            
-            let colorClass = "";
-            if (dayOfWeek === 0) colorClass = "sun";
-            if (dayOfWeek === 6) colorClass = "sat";
+        // 日付表示
+        const now = new Date();
+        const days = ['日', '月', '火', '水', '木', '金', '土'];
+        const dayOfWeek = now.getDay();
+        const dateEl = document.getElementById('dateContainer');
+        const colorClass = (dayOfWeek === 0) ? "text-red-500" : (dayOfWeek === 6) ? "text-blue-500" : "text-gray-500";
+        dateEl.innerHTML = `${now.getMonth() + 1}月${now.getDate()}日 <span class="${colorClass}">(${days[dayOfWeek]})</span>`;
 
-            const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 <span class="${colorClass}">(${days[dayOfWeek]})</span>`;
-            document.getElementById('dateContainer').innerHTML = dateStr;
+        // データの読み込み
+        let weeklyScores = JSON.parse(localStorage.getItem('weeklyScores')) || {};
+        members.forEach(m => { if(weeklyScores[m] === undefined) weeklyScores[m] = 0; });
+
+        function wakeUp(name) {
+            if (history.includes(name)) return;
+            const rankIndex = history.length;
+            const points = pointsTable[rankIndex];
+            history.push(name);
+            weeklyScores[name] += points;
+            localStorage.setItem('weeklyScores', JSON.stringify(weeklyScores));
+            updateUI();
         }
 
-        // 保存データの読み込み
-        let weeklyWins = JSON.parse(localStorage.getItem('weeklyWins')) || {};
-        members.forEach(m => { if(weeklyWins[m] === undefined) weeklyWins[m] = 0; });
+        function undo() {
+            if (history.length === 0) return;
+            const rankIndex = history.length - 1;
+            const points = pointsTable[rankIndex];
+            const removedName = history.pop();
+            weeklyScores[removedName] = Math.max(0, weeklyScores[removedName] - points);
+            localStorage.setItem('weeklyScores', JSON.stringify(weeklyScores));
+            updateUI();
+        }
 
-        function wakeUp(btn, name) {
-            count++;
-            if (count === 1) {
-                weeklyWins[name]++;
-                localStorage.setItem('weeklyWins', JSON.stringify(weeklyWins));
-                updateStats();
-            }
+        function updateUI() {
+            // 今日の順位
             const rankList = document.getElementById('rankList');
-            const div = document.createElement('div');
-            div.className = 'rank-item';
-            div.innerHTML = `<span class="rank-number">${count}位</span> <span>${name}</span>`;
-            rankList.appendChild(div);
-            btn.disabled = true;
+            rankList.innerHTML = history.map((name, i) => `
+                <div class="flex-1 bg-orange-50 border border-orange-100 rounded-2xl p-2 text-center animate-bounce-short">
+                    <span class="block text-[10px] font-black text-orange-400 uppercase">${i+1}位</span>
+                    <span class="block text-sm font-bold text-gray-700">${name}</span>
+                    <span class="block text-[10px] text-orange-300">+${pointsTable[i]}pt</span>
+                </div>
+            `).join('');
+
+            // こんしゅうの得点
+            const statsArea = document.getElementById('statsArea');
+            statsArea.innerHTML = members.map(m => `
+                <div class="flex-1 text-center p-2 rounded-xl bg-gray-50">
+                    <span class="block text-[10px] text-gray-400 mb-1">${m}</span>
+                    <span class="block text-xl font-black text-blue-500">${weeklyScores[m]}</span>
+                </div>
+            `).join('');
+
+            // ボタン制御
+            members.forEach(m => {
+                const btn = document.getElementById(`btn-${m}`);
+                btn.disabled = history.includes(m);
+                if(btn.disabled) btn.classList.add('opacity-50'); else btn.classList.remove('opacity-50');
+            });
+            document.getElementById('undoBtn').disabled = (history.length === 0);
         }
 
-        function updateStats() {
-            const table = document.getElementById('statsTable');
-            table.innerHTML = `<tr><th>なまえ</th><th>1位の数</th></tr>` + 
-                members.map(m => `<tr><td>${m}</td><td>🏆 ${weeklyWins[m]} 回</td></tr>`).join('');
-        }
+        function nextDay() { if(confirm("今日の順位をリセットしますか？")) location.reload(); }
+        function clearAll() { if(confirm("今週の得点をすべて消去しますか？")) { localStorage.clear(); location.reload(); } }
 
-        function nextDay() {
-            if(confirm("今日のランキングをリセットしますか？")) {
-                location.reload(); 
-            }
-        }
-
-        function clearAll() {
-            if(confirm("すべての記録を完全に消去しますか？")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-
-        // 実行
-        displayDate();
-        updateStats();
+        updateUI();
     </script>
+
+    <style>
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-bounce-short { animation: bounce-short 0.3s ease-out; }
+    </style>
 </body>
 </html>
